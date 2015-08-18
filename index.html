@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html ng-app="redditApp" ng-controller="submitController">
+<head>
+  <meta charset="UTF-8">
+  <title>07 Reddit</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/3.0.3/normalize.min.css"/>
+  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.3.2/angular.min.js"></script>
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.3/angular.js'></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js"></script>
+  <script src="http:////cdnjs.cloudflare.com/ajax/libs/angular-moment/0.9.0/angular-moment.min.js"></script>
+
+  <script type="text/javascript" src="app.js"></script>
+</head>
+<body>
+  <style>
+    nav {
+      background-color: #E3E1E3;
+      padding:10px;
+      width:100%;
+      }
+    .navelements {
+      display: inline-block;
+      width: 10%;
+      padding-right:5%;
+      padding-left:2%;
+    }
+    .submit{
+      margin-left:6%;
+      }
+
+      form[novalidate] input{
+        border-left-width:10px;
+        /* border-color:#red; */
+        border-style: solid;
+      }
+      input[required].ng-pristine{
+        border-color:red;
+
+      }
+      input.ng-invalid.ng-dirty{
+        border-color:red;
+      }
+
+      input.ng-valid.ng-dirty{
+        border-color:blue;
+      }
+
+
+    .image {
+      float:left;
+      /* width: 100%;
+      height: 240px; */
+    }
+
+    .postContent {
+      margin-left:20px;
+      padding-left:235px;
+    }
+
+    .voteColorUp {
+      color: green;
+    }
+    .voteColorDown {
+      color: red;
+    }
+
+    .posts{
+      background-color:#E3E1E3;
+      width: 85%;
+      height: auto;
+      margin-top:3%;
+      margin-left:6%;
+      padding:10px;
+      overflow:auto;
+    }
+    .subContent {
+      padding-left: 255px;
+
+
+    .timeTest{
+
+    }
+
+    .showComments {
+  /*     height: 300px;
+  width:300px;
+  background: green; */
+    }
+  </style>
+<nav>
+    <div class="navelements"><p>Reddit Clone</p></div>
+    <div class="navelements"><p><span ng-model="toggleSubmit" ng-click="toggleSubmit=!toggleSubmit"><i class="fa fa-plus"> Submit Post</i></span></p></div>
+    <div class="navelements"><p><input type="test" name="search" value="search" placeholder="Search" ng-model="search"></p></div>
+    <div class="navelements"><p>Sort by <select name="Sort" ng-model="sort">
+        <option value="-votes">Vote</option>
+        <option value="date">Date</option>
+        <option value="title">Title</option>
+      </select>
+    </p></div>
+</nav>
+<div ng-show="toggleSubmit" class="submit">
+  <form name="form" novalidate>
+    <p><b>Title</b></p>
+    <input type="text" value="Title" placeholder="Title" ng-model="title" required>
+    <p><b>Author</b></p>
+    <input type="text" value="Author" placeholder="Author" ng-model="author" required>
+    <p><b>Image URL</b></p>
+    <input type="text" value="ImageUrl" placeholder="Image Url" ng-model="imageUrl" required>
+    <p><b>Description</b></p>
+    <input type="text" value="Description" placeholder="Description" ng-model="description" required>
+    <p><button ng-click="addSubmit()" ng-disabled="form.$invalid">Submit Post</button></p>
+  </form>
+</div>
+<div class="posts" ng-repeat="submit in submitList | orderBy: sort | filter:search">
+  <div class="image">
+    <img ng-src="{{submit.imageUrl}}" alt="" style="width-max:250px">
+  </div>
+  <div class="postContent" ng-controller="voteController">
+    <p>{{submit.title}} | <i class="fa fa-arrow-down" ng-click="voteDown()">{{voteDown}}</i>&nbsp;<i class="fa fa-arrow-up" ng-click="voteUp()">{{voteUp}}</i>&nbsp;<span ng-class="{voteColorDown: votes < 0, voteColorUp: votes > 0}"</span>{{votes}}</p>
+    <p>By: {{submit.author}}</p>
+    <p>{{submit.description}}</p>
+  </div>
+  <div class="subContent" ng-controller="mainController as main">
+    <div class="time">
+      <i class="fa fa-calendar-plus-o">&nbsp;<time title="{{ main.time | amDateFormat: 'dddd, MMMM Do YYYY, h:mm a' }}">{{ main.time | amCalendar }}</time></i>
+    </div>
+    <div class="commentIcons" ng-model="toggleComments" ng-click="toggleComments=!toggleComments">
+      | <i class="fa fa-comment"></i> | <i class="fa fa-pencil"></i> Add Comment
+    </div>
+    <br>
+    <div ng-controller="commentController">
+      <div ng-show="toggleComments">
+          Author <input type="text" ng-model="commentAuthor"> Text <input type="text" ng-model="commentText">&nbsp;<button ng-click="addComment()"> Add Comment</button>
+      </div>
+      <div class="showComments"  ng-repeat="comments in commentsList">
+        <p>Author: {{comments.commentAuthor}}</p>
+        <p>Comment: {{comments.commentText}}</p>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
